@@ -21,7 +21,7 @@
     </v-row>
     <v-row no-gutters>
       <v-col cols="4" md="1">
-        <v-checkbox
+        <v-checkbox      
           v-model="bActeurMoral" 
           label="personnes morales"
           @click="onInputCritere">
@@ -52,12 +52,22 @@
         ></v-text-field>  
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="4" md="4">
+        <v-select
+        :items="acteursListeSelect"
+        label="selectionnez un acteur"
+        item-title="acteurnom"
+        item-value="acteurid"
+        v-model="selectedValue"></v-select>
+      </v-col>  
+    </v-row>
   </v-container>
 
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { getActeursListe } from '@/axioscalls.js'
 
 const props = defineProps({
@@ -70,7 +80,8 @@ let bActeurPhysique = ref(true)
 let bActeurDesactive = ref(false)
 let critereType = ref(props.critereTypeInit)
 let labelTextField = ref('nom')
-//console.log(props.critereTypeInit)
+const selectedValue = ref(null)
+const acteursListeSelect = ref([])
 
 watch(critereType, (newValue, oldValue) => {
   switch (newValue) {
@@ -79,7 +90,7 @@ watch(critereType, (newValue, oldValue) => {
       labelTextField.value = 'nom'
       break
     case 'idgo':
-      labelTextField.value = 'id acteur'
+      labelTextField.value = 'id acteu.valuer'
       break
     case 'idche':
       labelTextField.value = 'id fédéral (CHE-)'
@@ -143,5 +154,11 @@ const rechercheActeurs = async (critere, crType) => {
   //console.log (JSON.stringify(oCritere))
   const acteursListe = await getActeursListe(JSON.stringify(oCritere))
   console.log(acteursListe)
+  acteursListeSelect.value = acteursListe
+  //acteursListeSelect.value = [
+  //  { acteurnom: "aaag architectes sàrl", acteurid: 57506 },
+  //  { acteurnom: "Agence Agréée d'Assurances AAA SA", acteurid: 5302  },
+  //]
+  //console.log(acteursListeSelect)
 }
 </script>
