@@ -23,19 +23,22 @@
       <v-col cols="4" md="1">
         <v-checkbox
           v-model="bActeurMoral" 
-          label="personnes morales">
+          label="personnes morales"
+          @click="onInputCritere">
         </v-checkbox>  
       </v-col>
       <v-col cols="4" md="1">
         <v-checkbox
           v-model="bActeurPhysique" 
-          label="personnes physiques">
+          label="personnes physiques"
+          @click="onInputCritere">
         </v-checkbox>  
       </v-col>
       <v-col cols="4" md="1">
          <v-checkbox
           v-model="bActeurDesactive" 
-          label="y.c. acteurs désactivés">
+          label="y.c. acteurs désactivés"
+          @click="onInputCritere">
         </v-checkbox>  
       </v-col>
     </v-row>
