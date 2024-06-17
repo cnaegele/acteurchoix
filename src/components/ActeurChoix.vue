@@ -113,11 +113,31 @@ const prepareRechercheActeurs = () => {
   }
 }
 const rechercheActeurs = async (critere, crType) => {
-  console.log(`${crType} : ${critere}`)
+  let sbActeurMoral, sbActeurPhysique, sbActeurDesactive
+  if (bActeurMoral.value == true) {
+    sbActeurMoral = '1'  
+  } else {
+    sbActeurMoral = '0'  
+  }
+  if (bActeurPhysique.value == true) {
+    sbActeurPhysique = '1'  
+  } else {
+    sbActeurPhysique = '0'  
+  }
+  if (bActeurDesactive.value == true) {
+    sbActeurDesactive = '1'  
+  } else {
+    sbActeurDesactive = '0'  
+  }
+ 
   const oCritere = {
     "critere" : critere,
     "crtype" : crType,
+    "bacteurmoral" : sbActeurMoral,
+    "bacteurphysique" : sbActeurPhysique,
+    "bacteurdesactive" : sbActeurDesactive,
   }
+  //console.log (JSON.stringify(oCritere))
   const acteursListe = await getActeursListe(JSON.stringify(oCritere))
   console.log(acteursListe)
 }

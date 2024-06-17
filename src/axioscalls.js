@@ -8,12 +8,12 @@ const g_pathurl = '/goeland/acteur/ajax/'
 export async function getActeursListe(jsonCriteres) {
     const urlal = `${g_devurl}${g_pathurl}acteur_liste.php`
     const params = new URLSearchParams([['jsoncriteres', jsonCriteres]])
-    return jsonCriteres
-    //const response = await axios.get(urlal, { params })
-    //    .catch(function (error) {
-    //        return traiteAxiosError(error)
-    //    })
-    //return response.data
+    //return jsonCriteres
+    const response = await axios.get(urlal, { params })
+        .catch(function (error) {
+            return traiteAxiosError(error)
+        })
+    return response.data
 }
 
 function traiteAxiosError(error) {
