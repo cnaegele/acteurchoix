@@ -2,7 +2,11 @@
   <v-app>
     <v-main>
       salut
-      <ActeurChoix critereTypeInit="nom"></ActeurChoix>
+      <ActeurChoix 
+        critereTypeInit="nom"
+        nombreMaximumRetour="50"
+      >
+      </ActeurChoix>
     </v-main>
 
   </v-app>
