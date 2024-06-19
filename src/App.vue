@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-main>
-      salut
       <ActeurChoix 
         critereTypeInit="nom"
         nombreMaximumRetour="50"

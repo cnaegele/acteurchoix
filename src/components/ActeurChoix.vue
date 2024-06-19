@@ -3,7 +3,6 @@
 </style>
 
 <template>
-  <h1>{{ critereTypeInit }}</h1>
   <v-container>
     <v-row no-gutters>
       <v-col cols="4" md="4">
@@ -80,12 +79,42 @@
       </v-col>  
     </v-row>
   </v-container>
+  
+  <v-dialog max-width="1000">
+    <template v-slot:activator="{ props: activatorProps }">
+      <div style="display: none;">
+        <v-btn
+          id="btnActiveCard"
+          v-bind="activatorProps"
+        ></v-btn>
+      </div>
+    </template>
 
+    <template v-slot:default="isActive">
+      <v-card>
+        <v-card-actions>
+          <span class="cardTitre">Informations détaillées</span>
+          <v-spacer></v-spacer>
+          <v-btn
+            text="Fermer"
+            variant="tonal"
+            @click="closeCard"
+          ></v-btn>
+        </v-card-actions>
+        <v-card-text>
+          <div v-if="acteurIdInfo != '0'">
+            <Suspense><ActeurData :acteurId="acteurIdInfo"></ActeurData></Suspense>  
+          </div>
+        </v-card-text>
+      </v-card>
+    </template>
+  </v-dialog>
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
-import { getActeursListe } from '@/axioscalls.js'
+import { ref, watch } from 'vue'
+import { getActeursListe } from '../axioscalls.js'
+import ActeurData from '../../../acteurdata/src/components/ActeurData.vue'
 
 const props = defineProps({
   critereTypeInit: String,
@@ -93,18 +122,19 @@ const props = defineProps({
 })
 
 const libelleListe = ref('choix acteurs (0)')
-let txtCritere = ref('')
-let bActeurMoral = ref(true)
-let bActeurPhysique = ref(true)
-let bActeurDesactive = ref(false)
-let critereType = ref(props.critereTypeInit)
+const txtCritere = ref('')
+const bActeurMoral = ref(true)
+const bActeurPhysique = ref(true)
+const bActeurDesactive = ref(false)
+const critereType = ref(props.critereTypeInit)
 let nombreMaximumRetour = ref(100)
 if (props.nombreMaximumRetour !== undefined) {
   nombreMaximumRetour = ref(props.nombreMaximumRetour)
 }
-let labelTextField = ref('nom')
+const labelTextField = ref('nom')
 const selectedActeurId = ref(null)
 const acteursListeSelect = ref([])
+const acteurIdInfo = ref('0')
 
 watch(critereType, (newValue, oldValue) => {
   switch (newValue) {
@@ -113,7 +143,7 @@ watch(critereType, (newValue, oldValue) => {
       labelTextField.value = 'nom'
       break
     case 'idgo':
-      labelTextField.value = 'id acteu.valuer'
+      labelTextField.value = 'id acteur.value'
       break
     case 'idche':
       labelTextField.value = 'id fédéral (CHE-)'
@@ -193,6 +223,12 @@ const choixActeur = (acteurId) => {
 }
 
 const infoActeur = (acteurId) => {
-  alert(`todo... information acteur : ${acteurId}`)
+  acteurIdInfo.value = acteurId.toString()
+  document.getElementById("btnActiveCard").click() 
 }
+function closeCard() {
+  acteurIdInfo.value = '0'
+  document.getElementById("btnActiveCard").click()    
+}
+
 </script>
