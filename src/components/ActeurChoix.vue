@@ -1,7 +1,12 @@
 <style scoped>
-
+  .bactif0 {
+    font-style: italic;
+    color: rgb(252, 182, 182)
+  }
+  .bactif1 {
+    font-style: normal;
+  }
 </style>
-
 <template>
   <v-container>
     <v-row no-gutters>
@@ -62,7 +67,8 @@
             :key="acteur.acteurid"
             :value="acteur.acteurid"
             :title="acteur.acteurnom"
-            @click="choixActeur(acteur.acteurid)"
+            :class="`bactif${acteur.bactif}`"
+            @click="choixActeur(acteur)"
           >
 
             <template v-slot:append>
@@ -112,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, defineEmits } from 'vue'
 import { getActeursListe } from '../axioscalls.js'
 import ActeurData from '../../../acteurdata/src/components/ActeurData.vue'
 
@@ -218,15 +224,17 @@ const rechercheActeurs = async (critere, crType, nombreMaximumRetour) => {
   acteursListeSelect.value = acteursListe
 }
 
-const choixActeur = (acteurId) => {
-  console.log(acteurId)
+const emit = defineEmits(['choixActeur']);
+
+const choixActeur = (acteur) => {
+  emit('choixActeur', acteur.acteurid, JSON.stringify(acteur))
 }
 
 const infoActeur = (acteurId) => {
   acteurIdInfo.value = acteurId.toString()
   document.getElementById("btnActiveCard").click() 
 }
-function closeCard() {
+const closeCard = () => {
   acteurIdInfo.value = '0'
   document.getElementById("btnActiveCard").click()    
 }
