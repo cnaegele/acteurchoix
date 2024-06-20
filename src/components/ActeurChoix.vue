@@ -68,9 +68,16 @@
             :value="acteur.acteurid"
             :title="acteur.acteurnom"
             :class="`bactif${acteur.bactif}`"
-            @click="choixActeur(acteur)"
           >
 
+          <template v-slot:prepend>
+              <v-btn
+                color="grey-lighten-1"
+                icon="mdi-select"
+                variant="text"
+                @click="choixActeur(acteur)"
+              ></v-btn>
+            </template>
             <template v-slot:append>
               <v-btn
                 color="grey-lighten-1"
