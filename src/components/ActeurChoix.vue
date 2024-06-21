@@ -68,21 +68,20 @@
             :value="acteur.acteurid"
             :title="acteur.acteurnom"
             :class="`bactif${acteur.bactif}`"
+            @click="choixActeur(acteur)"
           >
-
-          <template v-slot:prepend>
-              <v-btn
-                color="grey-lighten-1"
-                icon="mdi-select"
-                variant="text"
-                @click="choixActeur(acteur)"
-              ></v-btn>
+            <!-- pour choix multiple
+            <template v-slot:prepend>
+              <v-checkbox></v-checkbox>
             </template>
+            -->
             <template v-slot:append>
               <v-btn
                 color="grey-lighten-1"
                 icon="mdi-information"
                 variant="text"
+                @mouseover="infoMouseOver()"
+                @mouseleave="infoMouseLeave()"
                 @click="infoActeur(acteur.acteurid)"
               ></v-btn>
             </template>
@@ -231,12 +230,23 @@ const rechercheActeurs = async (critere, crType, nombreMaximumRetour) => {
   acteursListeSelect.value = acteursListe
 }
 
+let demandeInfoActeur = false
 const emit = defineEmits(['choixActeur']);
 
 const choixActeur = (acteur) => {
-  emit('choixActeur', acteur.acteurid, JSON.stringify(acteur))
+  if (demandeInfoActeur == false) {
+    emit('choixActeur', acteur.acteurid, JSON.stringify(acteur))
+  }
 }
 
+const infoMouseOver = () => {
+  demandeInfoActeur = true
+  //console.log("souris sur info")
+}
+const infoMouseLeave = () => {
+  demandeInfoActeur = false
+  //console.log("souris quitte info")
+}
 const infoActeur = (acteurId) => {
   acteurIdInfo.value = acteurId.toString()
   document.getElementById("btnActiveCard").click() 
