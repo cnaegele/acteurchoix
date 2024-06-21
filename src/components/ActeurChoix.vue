@@ -80,7 +80,7 @@
                 color="grey-lighten-1"
                 icon="mdi-information"
                 variant="text"
-                @mouseover="infoMouseOver()"
+                @mouseenter="infoMouseEnter()"
                 @mouseleave="infoMouseLeave()"
                 @click="infoActeur(acteur.acteurid)"
               ></v-btn>
@@ -239,7 +239,7 @@ const choixActeur = (acteur) => {
   }
 }
 
-const infoMouseOver = () => {
+const infoMouseEnter = () => {
   demandeInfoActeur = true
   //console.log("souris sur info")
 }
