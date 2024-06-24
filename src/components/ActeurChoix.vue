@@ -124,7 +124,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineEmits } from 'vue'
+import { ref, watch } from 'vue'
 import { getActeursListe } from '../axioscalls.js'
 import ActeurData from '../../../acteurdata/src/components/ActeurData.vue'
 
