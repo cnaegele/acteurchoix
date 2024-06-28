@@ -56,11 +56,44 @@
         ></v-text-field>  
       </v-col>
     </v-row>
+    <v-row v-if="modeChoix=='multiple' && acteursListeChoisi.length > 0" no-gutters>
+      <v-col cols="4" md="4">
+        <v-list max-height="400">
+          <v-list-subheader>
+            Acteurs choisis ({{ acteursListeChoisi.length }})
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <v-btn
+              rounded="lg"
+              @click="choixTermine()"
+            >Choix terminé</v-btn>
+          </v-list-subheader>
+          <v-list-item
+            v-for="acteur in acteursListeChoisi"
+              :key="acteur.acteurid"
+              :value="acteur.acteurid"
+              :title="acteur.acteurnom"
+              :class="`bactif${acteur.bactif}`"
+          >
+          <template v-slot:append>
+              <v-btn
+                color="grey-lighten-1"
+                icon="mdi-delete"
+                variant="text"
+                @click="supprimeChoix(acteur.acteurid)"
+              ></v-btn>
+            </template>
+        </v-list-item>
+        </v-list>
+      </v-col>
+    </v-row>
+    <v-row v-if="modeChoix=='multiple' && acteursListeChoisi.length > 0" no-gutters>
+      <v-col cols="4" md="4">
+        &nbsp;
+      </v-col>
+    </v-row>
     <v-row no-gutters>
       <v-col cols="4" md="4">
-        <v-list
-          max-height="400" 
-        >
+        <v-list max-height="400">
           <v-list-subheader>{{ libelleListe }}</v-list-subheader>
           <v-list-item
             v-for="acteur in acteursListeSelect"
@@ -70,11 +103,6 @@
             :class="`bactif${acteur.bactif}`"
             @click="choixActeur(acteur)"
           >
-            <!-- pour choix multiple
-            <template v-slot:prepend>
-              <v-checkbox></v-checkbox>
-            </template>
-            -->
             <template v-slot:append>
               <v-btn
                 color="grey-lighten-1"
@@ -131,6 +159,7 @@ import ActeurData from '../../../acteurdata/src/components/ActeurData.vue'
 const props = defineProps({
   critereTypeInit: String,
   nombreMaximumRetour: String,
+  modeChoix: String,
 })
 
 const libelleListe = ref('choix acteurs (0)')
@@ -138,14 +167,21 @@ const txtCritere = ref('')
 const bActeurMoral = ref(true)
 const bActeurPhysique = ref(true)
 const bActeurDesactive = ref(false)
-const critereType = ref(props.critereTypeInit)
+let critereType = ref('nom')
+if (props.critereTypeInit !== undefined) {
+  critereType = ref(props.critereTypeInit)
+}
 let nombreMaximumRetour = ref(100)
 if (props.nombreMaximumRetour !== undefined) {
   nombreMaximumRetour = ref(props.nombreMaximumRetour)
 }
+let modeChoix = ref('unique')
+if (props.modeChoix !== undefined) {
+  modeChoix = ref(props.modeChoix)
+}
 const labelTextField = ref('nom')
-const selectedActeurId = ref(null)
 const acteursListeSelect = ref([])
+const acteursListeChoisi = ref([])
 const acteurIdInfo = ref('0')
 
 watch(critereType, (newValue, oldValue) => {
@@ -235,8 +271,22 @@ const emit = defineEmits(['choixActeur']);
 
 const choixActeur = (acteur) => {
   if (demandeInfoActeur == false) {
-    emit('choixActeur', acteur.acteurid, JSON.stringify(acteur))
+    if (modeChoix.value == 'unique') {
+      emit('choixActeur', acteur.acteurid, JSON.stringify(acteur))
+    } else if (modeChoix.value == 'multiple') {
+      if (acteursListeChoisi.value.some(objet => objet.acteurid === acteur.acteurid) === false) {
+        acteursListeChoisi.value.push(acteur)
+      }
+    }
   }
+}
+
+const supprimeChoix = (acteurid) => {
+  acteursListeChoisi.value = acteursListeChoisi.value.filter(objet => objet.acteurid !== acteurid)  
+}
+
+const choixTermine = () => {
+  emit('choixActeur', 0, JSON.stringify(acteursListeChoisi.value))   
 }
 
 const infoMouseEnter = () => {
