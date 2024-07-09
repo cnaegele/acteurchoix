@@ -120,7 +120,7 @@
     </v-row>
   </v-container>
   
-  <v-dialog max-width="1000">
+  <v-dialog max-width="1280">
     <template v-slot:activator="{ props: activatorProps }">
       <div style="display: none;">
         <v-btn
