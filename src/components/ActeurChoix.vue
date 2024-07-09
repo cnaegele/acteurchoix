@@ -10,7 +10,7 @@
 <template>
   <v-container>
     <v-row no-gutters>
-      <v-col cols="4" md="4">
+      <v-col cols="8" md="8">
         <v-radio-group
           label="critère selon"
           v-model="critereType"
@@ -24,21 +24,21 @@
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-col cols="4" md="1">
+      <v-col cols="8" md="2">
         <v-checkbox      
           v-model="bActeurMoral" 
           label="personnes morales"
           @click="onInputCritere">
         </v-checkbox>  
       </v-col>
-      <v-col cols="4" md="1">
+      <v-col cols="8" md="2">
         <v-checkbox
           v-model="bActeurPhysique" 
           label="personnes physiques"
           @click="onInputCritere">
         </v-checkbox>  
       </v-col>
-      <v-col cols="4" md="1">
+      <v-col cols="8" md="2">
          <v-checkbox
           v-model="bActeurDesactive" 
           label="y.c. acteurs désactivés"
@@ -47,7 +47,7 @@
       </v-col>
     </v-row>
     <v-row  no-gutters>
-      <v-col cols="4" md="2">
+      <v-col cols="8" md="4">
         <v-text-field 
           clearable 
           v-model="txtCritere" 
@@ -57,7 +57,7 @@
       </v-col>
     </v-row>
     <v-row v-if="modeChoix=='multiple' && acteursListeChoisi.length > 0" no-gutters>
-      <v-col cols="4" md="4">
+      <v-col cols="8" md="8">
         <v-list max-height="400">
           <v-list-subheader>
             Acteurs choisis ({{ acteursListeChoisi.length }})
@@ -87,12 +87,12 @@
       </v-col>
     </v-row>
     <v-row v-if="modeChoix=='multiple' && acteursListeChoisi.length > 0" no-gutters>
-      <v-col cols="4" md="4">
+      <v-col cols="8" md="8">
         &nbsp;
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-col cols="4" md="4">
+      <v-col cols="8" md="8">
         <v-list max-height="400">
           <v-list-subheader>{{ libelleListe }}</v-list-subheader>
           <v-list-item
