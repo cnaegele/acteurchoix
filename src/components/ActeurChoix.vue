@@ -286,7 +286,8 @@ const supprimeChoix = (acteurid) => {
 }
 
 const choixTermine = () => {
-  emit('choixActeur', 0, JSON.stringify(acteursListeChoisi.value))   
+  emit('choixActeur', 0, JSON.stringify(acteursListeChoisi.value))
+  acteursListeChoisi.value = [] 
 }
 
 const infoMouseEnter = () => {
