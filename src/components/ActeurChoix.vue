@@ -50,11 +50,16 @@
       <v-col cols="8" md="4">
         <v-text-field 
           clearable 
-          v-model="txtCritere" 
+          v-model="txtCritere"
+          ref="inpTxtCritere" 
           :label="labelTextField"
+          :rules="critereRules"
           @input="onInputCritere"
         ></v-text-field>  
       </v-col>
+    </v-row>
+    <v-row v-if="messageErreur != ''">
+      <v-col cols="8" md="8" v-html="messageErreur"></v-col>  
     </v-row>
     <v-row v-if="modeChoix=='multiple' && acteursListeChoisi.length > 0" no-gutters>
       <v-col cols="8" md="8">
@@ -152,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { getActeursListe } from '../axioscalls.js'
 import ActeurData from '../../../acteurdata/src/components/ActeurData.vue'
 
@@ -161,16 +166,18 @@ const props = defineProps({
   nombreMaximumRetour: String,
   modeChoix: String,
 })
-
+const messageErreur = ref('')
 const libelleListe = ref('choix acteurs (0)')
 const txtCritere = ref('')
 const bActeurMoral = ref(true)
 const bActeurPhysique = ref(true)
 const bActeurDesactive = ref(false)
+const inpTxtCritere = ref(null)
 let critereType = ref('nom')
 if (props.critereTypeInit !== undefined) {
   critereType = ref(props.critereTypeInit)
 }
+let bcritereRules
 let nombreMaximumRetour = ref(100)
 if (props.nombreMaximumRetour !== undefined) {
   nombreMaximumRetour = ref(props.nombreMaximumRetour)
@@ -184,14 +191,40 @@ const acteursListeSelect = ref([])
 const acteursListeChoisi = ref([])
 const acteurIdInfo = ref('0')
 
+const critereRules = [
+  value => {
+    if (critereType.value == 'idgo') {
+      if (!value) {
+        bcritereRules = true
+        return true
+      }
+      if (/^\+?(0|[1-9]\d*)$/.test(value)) {
+        bcritereRules = true
+        return true
+      }
+      bcritereRules = false
+      return 'id goéland invalide, numérique'
+    } else {
+      bcritereRules = true
+        return true
+    }
+  }
+]
+
+onMounted(() => {
+  inpTxtCritere.value.$el.querySelector('input').focus()
+})
+
 watch(critereType, (newValue, oldValue) => {
   switch (newValue) {
     case 'nom':
     case 'nomdebut':
       labelTextField.value = 'nom'
+      txtCritere.value = ''
       break
     case 'idgo':
       labelTextField.value = 'id acteur.value'
+      txtCritere.value = ''
       break
     case 'idche':
       labelTextField.value = 'id fédéral (CHE-)'
@@ -200,7 +233,6 @@ watch(critereType, (newValue, oldValue) => {
   }
   onInputCritere()
 })
-
 
 //pour démarrer la recherche seulement si la frappe au clavier a cessé depuis 0.7 secondes
 let typingTimer
@@ -212,20 +244,24 @@ const onInputCritere = () => {
   typingTimer = setTimeout(() => {
     prepareRechercheActeurs()
   }, typingInterval)
+
+  inpTxtCritere.value.$el.querySelector('input').focus()
 }
 
 const prepareRechercheActeurs = () => {
-  const critere = txtCritere.value
-  const crType = critereType.value
+  if (bcritereRules) {
+    const critere = txtCritere.value
+    const crType = critereType.value
 
-   if (critere.length >= 1 && crType == 'nomdebut') {
-    rechercheActeurs(critere, crType, nombreMaximumRetour.value)
-  } else if (critere.length >= 3 && crType == 'nom') {
-    rechercheActeurs(critere, crType, nombreMaximumRetour.value)
-  } else if (critere.length >= 1 && crType == 'idgo') {
-    rechercheActeurs(critere, crType, nombreMaximumRetour.value)
-  } else if (critere.length >= 15 && crType == 'idche') {
-    rechercheActeurs(critere, crType, nombreMaximumRetour.value)
+    if (critere.length >= 1 && crType == 'nomdebut') {
+      rechercheActeurs(critere, crType, nombreMaximumRetour.value)
+    } else if (critere.length >= 3 && crType == 'nom') {
+      rechercheActeurs(critere, crType, nombreMaximumRetour.value)
+    } else if (critere.length >= 1 && crType == 'idgo') {
+      rechercheActeurs(critere, crType, nombreMaximumRetour.value)
+    } else if (critere.length >= 15 && crType == 'idche') {
+      rechercheActeurs(critere, crType, nombreMaximumRetour.value)
+    }
   }
 }
 const rechercheActeurs = async (critere, crType, nombreMaximumRetour) => {
@@ -256,7 +292,11 @@ const rechercheActeurs = async (critere, crType, nombreMaximumRetour) => {
     "nombremaximumretour" : snombreMaximumRetour
   }
   //console.log (JSON.stringify(oCritere))
-  const acteursListe = await getActeursListe(JSON.stringify(oCritere))
+  let acteursListe = await getActeursListe(JSON.stringify(oCritere))
+  if (acteursListe.hasOwnProperty('message')) {
+    messageErreur.value += acteursListe.message + '<br>'
+    acteursListe = []
+  }
   if (acteursListe.length < nombreMaximumRetour) {
     libelleListe.value = `Choix acteurs (${acteursListe.length})`
   } else {
