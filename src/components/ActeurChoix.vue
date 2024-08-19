@@ -307,7 +307,7 @@ const rechercheActeurs = async (critere, crType, nombreMaximumRetour) => {
 }
 
 let demandeInfoActeur = false
-const emit = defineEmits(['choixActeur']);
+const emit = defineEmits(['choixActeur'])
 
 const choixActeur = (acteur) => {
   if (demandeInfoActeur == false) {
