@@ -51,7 +51,8 @@
         <v-text-field 
           clearable 
           v-model="txtCritere"
-          ref="inpTxtCritere" 
+          ref="inpTxtCritere"
+          autofocus 
           :label="labelTextField"
           :rules="critereRules"
           @input="onInputCritere"
@@ -157,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, nextTick } from 'vue'
 import { getActeursListe } from '../axioscalls.js'
 import ActeurData from '../../../acteurdata/src/components/ActeurData.vue'
 
@@ -212,7 +213,9 @@ const critereRules = [
 ]
 
 onMounted(() => {
-  inpTxtCritere.value.$el.querySelector('input').focus()
+  nextTick(() => {
+    inpTxtCritere.value?.focus()
+  })
 })
 
 watch(critereType, (newValue, oldValue) => {
